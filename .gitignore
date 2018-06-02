@@ -11,3 +11,5 @@ TP3Graficos-TomasMugetti/bin/
 TP3Graficos-TomasMugetti/TP3Graficos-TomasMugetti/allegro\.log
 
 TP3Graficos-TomasMugetti/TP3Graficos-TomasMugetti/obj/
+
+*.log

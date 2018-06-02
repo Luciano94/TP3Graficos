@@ -93,12 +93,13 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Libs\allegro_5.1.12_x86\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>allegro_dialog-debug.lib;allegro-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>allegro_dialog-debug.lib;allegro-debug.lib;allegro_image-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)Libs\allegro_5.1.12_x86\bin\allegro-debug-5.1.dll" "$(OutDir)"
-copy "$(SolutionDir)Libs\allegro_5.1.12_x86\bin\allegro_dialog-debug-5.1.dll" "$(OutDir)"</Command>
+copy "$(SolutionDir)Libs\allegro_5.1.12_x86\bin\allegro_dialog-debug-5.1.dll" "$(OutDir)"
+copy "$(SolutionDir)Libs\allegro_5.1.12_x86\bin\allegro_image-debug-5.1.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -121,7 +122,7 @@ copy "$(SolutionDir)Libs\allegro_5.1.12_x86\bin\allegro_dialog-debug-5.1.dll" "$
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)Libs\allegro_5.1.12_x86\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>psapi.lib;shlwapi.lib;winmm.lib;opengl32.lib;allegro-static.lib;allegro_dialog-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>psapi.lib;shlwapi.lib;winmm.lib;opengl32.lib;allegro-static.lib;allegro_dialog-static.lib;allegro_image-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -140,6 +141,10 @@ copy "$(SolutionDir)Libs\allegro_5.1.12_x86\bin\allegro_dialog-debug-5.1.dll" "$
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Player.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Player.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
