@@ -17,7 +17,6 @@ public:
 	void draw();
 	void move();
 	void shot();
-	void imprimite();
 	void setPosition(int x, int y);
 };
 #endif // !PLAYER_H

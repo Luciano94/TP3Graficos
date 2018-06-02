@@ -3,8 +3,8 @@
 Player::Player(char* spriteFile, int playerSize){
 	_player = al_load_bitmap(spriteFile);
 	if (!_player) {
-		cout << "no me creo";
-	}else cout << " me creo";
+		cout << "Player error";
+	}
 	_playerSize = playerSize;
 	_playerX = 0;
 	_playerY = 0;
@@ -24,11 +24,6 @@ void Player::shot(){
 
 void Player::draw(){
 	al_draw_bitmap(_player, _playerX, _playerY, 0);
-	cout << " me dibujo";
-}
-
-void Player::imprimite() {
-	cout << "playerSize: " << _playerSize;
 }
 
 void Player::setPosition(int x, int y) {

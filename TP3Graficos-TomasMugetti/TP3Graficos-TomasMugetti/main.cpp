@@ -16,9 +16,16 @@ int main(int argc, char **argv) {
 	ALLEGRO_TIMER *timer = NULL;						//timer del juego
 	bool redraw = true;									 // controla el refresco de pantalla
 	bool doexit = false;								 //controla el loop de la ventana
+	Player* player;
 	/*inicializo allegro*/
 	if (!al_init()) {
 		al_show_native_message_box(display, "Error", "Error", "Failed to initialize allegro!",
+			NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		return -1;
+	}
+	/*inicializo extencion para cargar imagenes*/
+	if (!al_init_image_addon()) {
+		al_show_native_message_box(display, "Error", "Error", "Failed to initialize al_init_image_addon!",
 			NULL, ALLEGRO_MESSAGEBOX_ERROR);
 		return -1;
 	}
@@ -50,7 +57,11 @@ int main(int argc, char **argv) {
 	al_clear_to_color(al_map_rgb(0, 0, 0)); //pongo pantalla en negro
 	al_flip_display();						//dibuja pantalla
 	al_start_timer(timer);					//inicializo el timer
-	while (!doexit){			//windows loop
+	/*creo elementos del juego*/
+	player = new Player("player.png",PLAYER_SIZE);
+	player->setPosition(SCREEN_W / 2.0 - PLAYER_SIZE / 2.0, SCREEN_H - PLAYER_SIZE);
+	/*game loop*/
+	while (!doexit){
 		ALLEGRO_EVENT ev;		//variable para eventos
 		al_wait_for_event(event_queue, &ev);	//espero que haya eventos en la cola
 		if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {	//evento de cerrar ventana
@@ -59,6 +70,7 @@ int main(int argc, char **argv) {
 		if (redraw && al_is_event_queue_empty(event_queue)) {
 			redraw = false;
 			al_clear_to_color(al_map_rgb(0, 0, 0));	//se pone la pantalla en negro
+			player->draw();							//dibuja player
 			al_flip_display();						//dibuja pantalla
 		}
 	}
