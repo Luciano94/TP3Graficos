@@ -1,0 +1,11 @@
+Observaciones de Proyecto:
+-Falta configurar correctamente el archivo .gitignore
+-Los archivos "ejemplo allegro imagen.txt" y "ejemplo allegro ventana.txt" no deberian formar parte del proyecto
+
+Observaciones de Configuracion:
+-Falta configurar los directorios adicionales tanto en debug como release
+-Falta configurar carpeta destino de archibos intermedios tanto en debug como release
+-Falta configurar carpeta destino de archivos binarios tanto en debug como release
+-Falta configurar librerias adicionales tanto en debug como release
+-Falta configurar comandos posteriores a la compilacion tanto en debug como release
+-Falta configuracion de subsistemas tanto en debug como release
