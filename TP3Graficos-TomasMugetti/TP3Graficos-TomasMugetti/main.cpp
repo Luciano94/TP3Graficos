@@ -4,11 +4,10 @@
 #include "allegro5/allegro.h"
 #include "allegro5/allegro_native_dialog.h"
 #include "Player.h"
+#include "Definitions.h"
+
 /*constantes*/
 const float FPS = 60;		//timer
-const int SCREEN_W = 640;	//ancho de pantalla
-const int SCREEN_H = 480;	//largo de pantalla
-const int PLAYER_SIZE = 32;	//ancho del personaje
 
 int main(int argc, char **argv) {
 	ALLEGRO_DISPLAY *display = NULL;					 // pantalla
@@ -17,6 +16,7 @@ int main(int argc, char **argv) {
 	bool redraw = true;									 // controla el refresco de pantalla
 	bool doexit = false;								 //controla el loop de la ventana
 	Player* player;
+	bool key[4] = { false, false, false, false };
 	/*inicializo allegro*/
 	if (!al_init()) {
 		al_show_native_message_box(display, "Error", "Error", "Failed to initialize allegro!",
@@ -36,8 +36,14 @@ int main(int argc, char **argv) {
 			NULL, ALLEGRO_MESSAGEBOX_ERROR);
 		return -1;
 	}
+	/*inicializo el teclado*/
+	if (!al_install_keyboard()) {
+		al_show_native_message_box(display, "Error", "Error", "Failed to initialize keyboard!",
+			NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		return -1;
+	}
 	/*inicializo la ventana*/
-	display = al_create_display(SCREEN_W, SCREEN_H);
+	display = al_create_display(Screen_W, Screen_H);
 	if (!display) {
 		al_show_native_message_box(display, "Error", "Error", "Failed to initialize display!",
 			NULL, ALLEGRO_MESSAGEBOX_ERROR);
@@ -54,18 +60,65 @@ int main(int argc, char **argv) {
 	}
 	al_register_event_source(event_queue, al_get_display_event_source(display)); //inicializo eventos de ventana
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));	//inicializo eventos del timer
+	al_register_event_source(event_queue, al_get_keyboard_event_source());
 	al_clear_to_color(al_map_rgb(0, 0, 0)); //pongo pantalla en negro
 	al_flip_display();						//dibuja pantalla
 	al_start_timer(timer);					//inicializo el timer
 	/*creo elementos del juego*/
-	player = new Player("player.png",PLAYER_SIZE);
-	player->setPosition(SCREEN_W / 2.0 - PLAYER_SIZE / 2.0, SCREEN_H - PLAYER_SIZE);
+	player = new Player();
+	player->setPosition(Screen_W / 2.0 - Player_Size / 2.0, Screen_H - Player_Size);
 	/*game loop*/
 	while (!doexit){
-		ALLEGRO_EVENT ev;		//variable para eventos
-		al_wait_for_event(event_queue, &ev);	//espero que haya eventos en la cola
+		ALLEGRO_EVENT ev;								//variable para eventos
+		al_wait_for_event(event_queue, &ev);			//espero que haya eventos en la cola
 		if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {	//evento de cerrar ventana
-			return 0;
+			doexit = true;
+		}
+		if (ev.type == ALLEGRO_EVENT_TIMER) {
+			player->move(key);
+			redraw = true;
+		}
+		else if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
+			switch (ev.keyboard.keycode) {
+			case ALLEGRO_KEY_UP:
+				key[KEY_UP] = true;
+				break;
+
+			case ALLEGRO_KEY_DOWN:
+				key[KEY_DOWN] = true;
+				break;
+
+			case ALLEGRO_KEY_LEFT:
+				key[KEY_LEFT] = true;
+				break;
+
+			case ALLEGRO_KEY_RIGHT:
+				key[KEY_RIGHT] = true;
+				break;
+			}
+		}
+		else if (ev.type == ALLEGRO_EVENT_KEY_UP) {
+			switch (ev.keyboard.keycode) {
+			case ALLEGRO_KEY_UP:
+				key[KEY_UP] = false;
+				break;
+
+			case ALLEGRO_KEY_DOWN:
+				key[KEY_DOWN] = false;
+				break;
+
+			case ALLEGRO_KEY_LEFT:
+				key[KEY_LEFT] = false;
+				break;
+
+			case ALLEGRO_KEY_RIGHT:
+				key[KEY_RIGHT] = false;
+				break;
+
+			case ALLEGRO_KEY_ESCAPE:
+				doexit = true;
+				break;
+			}
 		}
 		if (redraw && al_is_event_queue_empty(event_queue)) {
 			redraw = false;
@@ -77,5 +130,7 @@ int main(int argc, char **argv) {
 	al_destroy_display(display);					//destruye la pantalla
 	al_destroy_event_queue(event_queue);			//destruye cola de eventos
 	al_destroy_timer(timer);						//destruyo el timer
+	al_uninstall_keyboard();
+	delete player;
 	return 0;
 }

@@ -1,21 +1,35 @@
 #include "Player.h"
 
-Player::Player(char* spriteFile, int playerSize){
-	_player = al_load_bitmap(spriteFile);
+Player::Player(){
+	_player = al_load_bitmap(PLAYER_SPRITE);
 	if (!_player) {
 		cout << "Player error";
 	}
-	_playerSize = playerSize;
 	_playerX = 0;
 	_playerY = 0;
+	_lives = PLAYER_LIVES;
 }
 
 Player::~Player(){
 	al_destroy_bitmap(_player);
 }
 
-void Player::move(){
-	//movimiento del player
+void Player::move( bool key[]){
+	if (key[KEY_UP] && _playerY >= 4.0) {
+		_playerY -= PLAYER_SPEED;
+	}
+
+	if (key[KEY_DOWN] && _playerY <= Screen_H - Player_Size - 4.0) {
+		_playerY += PLAYER_SPEED;
+	}
+
+	if (key[KEY_LEFT] && _playerX >= 4.0) {
+		_playerX -= PLAYER_SPEED;
+	}
+
+	if (key[KEY_RIGHT] && _playerX <= Screen_W - Player_Size - 4.0) {
+		_playerX += PLAYER_SPEED;
+	}
 }
 
 void Player::shot(){
