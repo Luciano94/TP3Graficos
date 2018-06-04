@@ -4,19 +4,26 @@
 #include "allegro5/allegro.h"
 #include "allegro5/allegro_native_dialog.h"
 #include "Player.h"
+#include "Enemy.h"
 #include "Definitions.h"
+#include <ctime>
+
 
 /*constantes*/
 const float FPS = 60;		//timer
+const int cantEnemies = 5;	//cantidad de enemigos en pantalla
 
 int main(int argc, char **argv) {
+	
 	ALLEGRO_DISPLAY *display = NULL;					 // pantalla
 	ALLEGRO_EVENT_QUEUE *event_queue = NULL;			 //cola de eventos
 	ALLEGRO_TIMER *timer = NULL;						//timer del juego
 	bool redraw = true;									 // controla el refresco de pantalla
 	bool doexit = false;								 //controla el loop de la ventana
 	Player* player;
+	Enemy* enemy[cantEnemies];
 	bool key[4] = { false, false, false, false };
+	srand(time(0));
 	/*inicializo allegro*/
 	if (!al_init()) {
 		al_show_native_message_box(display, "Error", "Error", "Failed to initialize allegro!",
@@ -43,7 +50,7 @@ int main(int argc, char **argv) {
 		return -1;
 	}
 	/*inicializo la ventana*/
-	display = al_create_display(Screen_W, Screen_H);
+	display = al_create_display(SCREEN_W, SCREEN_H);
 	if (!display) {
 		al_show_native_message_box(display, "Error", "Error", "Failed to initialize display!",
 			NULL, ALLEGRO_MESSAGEBOX_ERROR);
@@ -58,15 +65,22 @@ int main(int argc, char **argv) {
 		al_destroy_display(display);
 		return -1;
 	}
+	
 	al_register_event_source(event_queue, al_get_display_event_source(display)); //inicializo eventos de ventana
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));	//inicializo eventos del timer
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
 	al_clear_to_color(al_map_rgb(0, 0, 0)); //pongo pantalla en negro
 	al_flip_display();						//dibuja pantalla
 	al_start_timer(timer);					//inicializo el timer
+	
 	/*creo elementos del juego*/
 	player = new Player();
-	player->setPosition(Screen_W / 2.0 - Player_Size / 2.0, Screen_H - Player_Size);
+	player->setPosition(SCREEN_W / 2.0 - PLAYER_SIZE / 2.0, SCREEN_H - PLAYER_SIZE);
+	/*Creacion de enemigos*/
+	for (int i = 0; i < cantEnemies; i++)
+		enemy[i] = new Enemy();
+	for (int i = 0; i < cantEnemies; i++)
+		enemy[i]->setPosition(rand() % (SCREEN_W - ENEMY_SIZE - 20 + 1),ENEMY_SIZE);
 	/*game loop*/
 	while (!doexit){
 		ALLEGRO_EVENT ev;								//variable para eventos
@@ -94,6 +108,9 @@ int main(int argc, char **argv) {
 
 			case ALLEGRO_KEY_RIGHT:
 				key[KEY_RIGHT] = true;
+				break;
+			case ALLEGRO_KEY_SPACE:
+				player->shot();
 				break;
 			}
 		}
@@ -124,6 +141,8 @@ int main(int argc, char **argv) {
 			redraw = false;
 			al_clear_to_color(al_map_rgb(0, 0, 0));	//se pone la pantalla en negro
 			player->draw();							//dibuja player
+			for (int i = 0; i < cantEnemies; i++)
+				enemy[i]->draw();
 			al_flip_display();						//dibuja pantalla
 		}
 	}
@@ -132,5 +151,6 @@ int main(int argc, char **argv) {
 	al_destroy_timer(timer);						//destruyo el timer
 	al_uninstall_keyboard();
 	delete player;
+	//delete[] enemy;
 	return 0;
 }

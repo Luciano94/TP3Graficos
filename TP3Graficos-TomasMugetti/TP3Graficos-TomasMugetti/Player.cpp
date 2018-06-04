@@ -5,9 +5,11 @@ Player::Player(){
 	if (!_player) {
 		cout << "Player error";
 	}
-	_playerX = 0;
-	_playerY = 0;
-	_lives = PLAYER_LIVES;
+	else {
+		_playerX = 0;
+		_playerY = 0;
+		_lives = PLAYER_LIVES;
+	}
 }
 
 Player::~Player(){
@@ -15,19 +17,12 @@ Player::~Player(){
 }
 
 void Player::move( bool key[]){
-	if (key[KEY_UP] && _playerY >= 4.0) {
-		_playerY -= PLAYER_SPEED;
-	}
 
-	if (key[KEY_DOWN] && _playerY <= Screen_H - Player_Size - 4.0) {
-		_playerY += PLAYER_SPEED;
-	}
-
-	if (key[KEY_LEFT] && _playerX >= 4.0) {
+	if (key[KEY_LEFT] && _playerX >= PLAYER_SPEED) {
 		_playerX -= PLAYER_SPEED;
 	}
 
-	if (key[KEY_RIGHT] && _playerX <= Screen_W - Player_Size - 4.0) {
+	if (key[KEY_RIGHT] && _playerX <= SCREEN_W - PLAYER_SIZE - PLAYER_SPEED) {
 		_playerX += PLAYER_SPEED;
 	}
 }

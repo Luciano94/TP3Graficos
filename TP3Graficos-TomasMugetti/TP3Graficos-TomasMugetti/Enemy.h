@@ -1,25 +1,24 @@
-#ifndef PLAYER_H
-#define PLAYER_H
+#ifndef ENEMY_H
+#define ENEMY_H
 #include <iostream>
 #include "allegro5/allegro.h"
 #include "allegro5/allegro_image.h"
 #include "allegro5/allegro_native_dialog.h"
 #include "Definitions.h"
+#include <ctime>
 using namespace std;
 
-class Player {
+class Enemy {
 private:
-	ALLEGRO_BITMAP* _player;
-	int _playerX;
-	int _playerY;
-	int _lives;
+	ALLEGRO_BITMAP* _enemy;
+	int _enemyX;
+	int _enemyY;
+
 public:
-	Player();
-	~Player();
+
+	Enemy();
+	~Enemy();
 	void draw();
-	void move(bool key[]);
-	void shot();
 	void setPosition(int x, int y);
 };
-#endif // !PLAYER_H
-
+#endif // !PLAYER_H#pragma once
