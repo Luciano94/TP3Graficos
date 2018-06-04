@@ -3,6 +3,8 @@
 #endif // !_DEBUG
 #include "allegro5/allegro.h"
 #include "allegro5/allegro_native_dialog.h"
+#include "allegro5/allegro_acodec.h"
+#include "allegro5/allegro_audio.h"
 #include "Player.h"
 #include "Enemy.h"
 #include "Definitions.h"
@@ -18,6 +20,7 @@ int main(int argc, char **argv) {
 	ALLEGRO_DISPLAY *display = NULL;					 // pantalla
 	ALLEGRO_EVENT_QUEUE *event_queue = NULL;			 //cola de eventos
 	ALLEGRO_TIMER *timer = NULL;						//timer del juego
+	ALLEGRO_BITMAP* menu = NULL;
 	bool gameStart = false;
 	/*inicializo allegro*/
 	if (!al_init()) {
@@ -60,14 +63,42 @@ int main(int argc, char **argv) {
 		al_destroy_display(display);
 		return -1;
 	}
-
-	al_register_event_source(event_queue, al_get_display_event_source(display)); //inicializo eventos de ventana
-	al_register_event_source(event_queue, al_get_timer_event_source(timer));	//inicializo eventos del timer
-	al_register_event_source(event_queue, al_get_keyboard_event_source());
+	menu = al_load_bitmap(MENU_FILE);
+	if (!menu) {
+		al_show_native_message_box(display, "Error", "Error", "Failed to load menu!",
+			NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		al_destroy_display(display);
+		al_destroy_timer(timer);
+		return -1;
+	}
+	al_register_event_source(event_queue, al_get_display_event_source(display)); //agrego los eventos de ventana a la cola de eventos
+	al_register_event_source(event_queue, al_get_timer_event_source(timer));	//agrego los eventos del timer a la cola de eventos
+	al_register_event_source(event_queue, al_get_keyboard_event_source());		//agrego los eventos del teclado a la cola de eventos
 	al_clear_to_color(al_map_rgb(0, 0, 0)); //pongo pantalla en negro
 	al_flip_display();						//dibuja pantalla
 	al_start_timer(timer);					//inicializo el timer
-
+	/*Pantalla de titulo*/
+	while (!gameStart) {
+		ALLEGRO_EVENT event;
+		al_wait_for_event(event_queue, &event);
+		if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {	//evento de cerrar ventana
+			return 0;
+		}
+		if (event.type == ALLEGRO_EVENT_KEY_UP) {
+			switch (event.keyboard.keycode) {
+			case ALLEGRO_KEY_ENTER:
+				gameStart = true;
+				break;
+			case ALLEGRO_KEY_ESCAPE:
+				return 0;
+				break;
+			}
+		}
+		al_draw_bitmap(menu,0,0,0);
+		al_flip_display();
+	}
+	/*Juego*/
+	if (gameStart) {
 		bool redraw = true;									 // controla el refresco de pantalla
 		bool doexit = false;								 //controla el loop de la ventana
 		Player* player;
@@ -76,8 +107,6 @@ int main(int argc, char **argv) {
 		bool shot = false;
 		bool key[4] = { false, false, false, false };
 		srand(time(0));
-
-
 		/*creo elementos del juego*/
 		player = new Player();
 		player->setPosition(SCREEN_W / 2.0 - PLAYER_SIZE / 2.0, SCREEN_H - PLAYER_SIZE);
@@ -174,5 +203,9 @@ int main(int argc, char **argv) {
 		al_destroy_timer(timer);						//destruyo el timer
 		al_uninstall_keyboard();
 		delete player;
+		for (int i = 0; i < cantEnemies; i++)
+			delete enemy[i];
+		delete bullet;
+	}
 		return 0;
 }

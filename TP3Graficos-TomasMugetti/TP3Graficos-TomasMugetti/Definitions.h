@@ -17,7 +17,7 @@
 #define BULLET_SPEED 8
 #define BULLET_SPRITE "player.png"
 //Menu
-#define BACKGROUND "player.png"
+#define MENU_FILE "menu.png"
 //teclas
 enum MYKEYS {
 	KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT
