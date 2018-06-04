@@ -21,6 +21,8 @@ int main(int argc, char **argv) {
 	ALLEGRO_EVENT_QUEUE *event_queue = NULL;			 //cola de eventos
 	ALLEGRO_TIMER *timer = NULL;						//timer del juego
 	ALLEGRO_BITMAP* menu = NULL;
+	ALLEGRO_SAMPLE* playerShot = NULL;					//sonido de disparo del player
+	ALLEGRO_SAMPLE* enemyDeath = NULL;					//sonido muerte del enemigo
 	bool gameStart = false;
 	/*inicializo allegro*/
 	if (!al_init()) {
@@ -63,6 +65,7 @@ int main(int argc, char **argv) {
 		al_destroy_display(display);
 		return -1;
 	}
+	/*creo la imagen del menu*/
 	menu = al_load_bitmap(MENU_FILE);
 	if (!menu) {
 		al_show_native_message_box(display, "Error", "Error", "Failed to load menu!",
@@ -71,12 +74,37 @@ int main(int argc, char **argv) {
 		al_destroy_timer(timer);
 		return -1;
 	}
+	/*inicializo audio*/
+	if (!al_install_audio()) {
+		fprintf(stderr, "failed to initialize audio!\n");
+		return -1;
+	}
+	if (!al_init_acodec_addon()) {
+		fprintf(stderr, "failed to initialize audio codecs!\n");
+		return -1;
+	}
+	if (!al_reserve_samples(3)) {
+		fprintf(stderr, "failed to reserve samples!\n");
+		return -1;
+	}
+
+	playerShot = al_load_sample(SHOT_SOUND);
+
+	if (!playerShot)
+		printf("Audio clip sample not loaded!\n");
+	
+	enemyDeath = al_load_sample(ENEMY_DEATH);
+
+	if (!enemyDeath)
+		printf("Audio clip sample not loaded!\n");
+
 	al_register_event_source(event_queue, al_get_display_event_source(display)); //agrego los eventos de ventana a la cola de eventos
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));	//agrego los eventos del timer a la cola de eventos
 	al_register_event_source(event_queue, al_get_keyboard_event_source());		//agrego los eventos del teclado a la cola de eventos
 	al_clear_to_color(al_map_rgb(0, 0, 0)); //pongo pantalla en negro
 	al_flip_display();						//dibuja pantalla
 	al_start_timer(timer);					//inicializo el timer
+	
 	/*Pantalla de titulo*/
 	while (!gameStart) {
 		ALLEGRO_EVENT event;
@@ -106,6 +134,11 @@ int main(int argc, char **argv) {
 		Bullet* bullet = NULL;
 		bool shot = false;
 		bool key[4] = { false, false, false, false };
+		ALLEGRO_SAMPLE* music=NULL;
+		music = al_load_sample(MUSIC_SOUND);
+
+		if (!music)
+			printf("Audio clip sample not loaded!\n");
 		srand(time(0));
 		/*creo elementos del juego*/
 		player = new Player();
@@ -116,6 +149,7 @@ int main(int argc, char **argv) {
 		for (int i = 0; i < cantEnemies; i++)
 			enemy[i]->setPosition(rand() % (SCREEN_W - ENEMY_SIZE - 20 + 1), ENEMY_SIZE);
 		/*game loop*/
+		al_play_sample(music, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
 		while (!doexit) {
 			ALLEGRO_EVENT ev;								//variable para eventos
 			al_wait_for_event(event_queue, &ev);			//espero que haya eventos en la cola
@@ -168,9 +202,11 @@ int main(int argc, char **argv) {
 					break;
 
 				case ALLEGRO_KEY_C:
-					if (!shot)
+					if (!shot) {
 						bullet = player->shot(shot);
-					break;
+						al_play_sample(playerShot, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+					}
+						break;
 				}
 			}
 			if (redraw && al_is_event_queue_empty(event_queue)) {
@@ -189,6 +225,7 @@ int main(int argc, char **argv) {
 			for (int i = 0; i < cantEnemies; i++) {
 				if (shot && (bullet->collision(enemy[i]->getEnemyX(), enemy[i]->getEnemyY(), ENEMY_SIZE))) {
 					enemy[i]->reset();
+					al_play_sample(enemyDeath, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 					delete bullet;
 					shot = false;
 				}
@@ -205,7 +242,7 @@ int main(int argc, char **argv) {
 		delete player;
 		for (int i = 0; i < cantEnemies; i++)
 			delete enemy[i];
-		delete bullet;
+		if(bullet) delete bullet;
 	}
 		return 0;
 }

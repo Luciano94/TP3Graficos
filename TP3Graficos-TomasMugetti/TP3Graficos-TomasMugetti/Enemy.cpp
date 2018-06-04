@@ -27,6 +27,7 @@ int Enemy::getEnemyY(){
 void Enemy::reset(){
 	_enemyY = ENEMY_SIZE;
 	_enemyX = rand() % (SCREEN_W - ENEMY_SIZE - 20 + 1);
+
 }
 
 void Enemy::draw()

@@ -18,6 +18,10 @@
 #define BULLET_SPRITE "player.png"
 //Menu
 #define MENU_FILE "menu.png"
+//sounds
+#define SHOT_SOUND "playerShot.wav"
+#define ENEMY_DEATH "enemyDeath.wav"
+#define MUSIC_SOUND "levelMusic.wav"
 //teclas
 enum MYKEYS {
 	KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT

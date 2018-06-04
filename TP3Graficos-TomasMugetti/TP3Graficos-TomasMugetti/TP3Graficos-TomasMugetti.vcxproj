@@ -99,7 +99,9 @@
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)Libs\allegro_5.1.12_x86\bin\allegro-debug-5.1.dll" "$(OutDir)"
 copy "$(SolutionDir)Libs\allegro_5.1.12_x86\bin\allegro_dialog-debug-5.1.dll" "$(OutDir)"
-copy "$(SolutionDir)Libs\allegro_5.1.12_x86\bin\allegro_image-debug-5.1.dll" "$(OutDir)"</Command>
+copy "$(SolutionDir)Libs\allegro_5.1.12_x86\bin\allegro_image-debug-5.1.dll" "$(OutDir)"
+copy "$(SolutionDir)Libs\allegro_5.1.12_x86\bin\allegro_acodec-debug-5.1.dll" "$(OutDir)"
+copy "$(SolutionDir)Libs\allegro_5.1.12_x86\bin\allegro_audio-debug-5.1.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
