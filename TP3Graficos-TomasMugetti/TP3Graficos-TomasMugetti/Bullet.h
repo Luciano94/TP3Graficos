@@ -16,8 +16,8 @@ public:
 	Bullet(int bulletX, int bulletY);
 	~Bullet();
 	void draw();
-	void update();
-	void setPosition(ínt bulletX,int bulletY);
+	void update(bool &shot);
+	void setPosition(int bulletX,int bulletY);
 };
 #endif // !BULLET_H
 

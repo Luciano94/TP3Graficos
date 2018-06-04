@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Definitions.h"
+#include "Bullet.h"
 #include <ctime>
 
 
@@ -22,6 +23,8 @@ int main(int argc, char **argv) {
 	bool doexit = false;								 //controla el loop de la ventana
 	Player* player;
 	Enemy* enemy[cantEnemies];
+	Bullet* bullet=NULL;
+	bool shot = false;
 	bool key[4] = { false, false, false, false };
 	srand(time(0));
 	/*inicializo allegro*/
@@ -109,9 +112,6 @@ int main(int argc, char **argv) {
 			case ALLEGRO_KEY_RIGHT:
 				key[KEY_RIGHT] = true;
 				break;
-			case ALLEGRO_KEY_SPACE:
-				player->shot();
-				break;
 			}
 		}
 		else if (ev.type == ALLEGRO_EVENT_KEY_UP) {
@@ -135,6 +135,11 @@ int main(int argc, char **argv) {
 			case ALLEGRO_KEY_ESCAPE:
 				doexit = true;
 				break;
+
+			case ALLEGRO_KEY_C:
+				if(!shot)
+					bullet = player->shot(shot);
+				break;
 			}
 		}
 		if (redraw && al_is_event_queue_empty(event_queue)) {
@@ -143,6 +148,10 @@ int main(int argc, char **argv) {
 			player->draw();							//dibuja player
 			for (int i = 0; i < cantEnemies; i++)
 				enemy[i]->draw();
+			if (shot) {
+				bullet->draw();
+				bullet->update(shot);
+			}
 			al_flip_display();						//dibuja pantalla
 		}
 	}

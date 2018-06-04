@@ -14,7 +14,7 @@
 #define ENEMY_SPRITE "enemy.png"
 //Bullet
 #define BULLET_SIZE 32
-#define BULLET_SPEED 2
+#define BULLET_SPEED 8
 #define BULLET_SPRITE "player.png"
 //teclas
 enum MYKEYS {

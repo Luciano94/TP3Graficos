@@ -5,6 +5,7 @@
 #include "allegro5/allegro_image.h"
 #include "allegro5/allegro_native_dialog.h"
 #include "Definitions.h"
+#include "Bullet.h"
 using namespace std;
 
 class Player {
@@ -18,7 +19,7 @@ public:
 	~Player();
 	void draw();
 	void move(bool key[]);
-	void shot();
+	Bullet* shot(bool &shot);
 	void setPosition(int x, int y);
 };
 #endif // !PLAYER_H

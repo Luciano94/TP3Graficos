@@ -4,7 +4,7 @@ Bullet::Bullet(int bulletX, int bulletY)
 {
 	_bullet = al_load_bitmap(PLAYER_SPRITE);
 	if (!_bullet) {
-		cout << "Player error";
+		cout << "Bullet error";
 	}
 	else {
 		_bulletX = bulletX;
@@ -22,13 +22,13 @@ void Bullet::draw()
 	al_draw_bitmap(_bullet, _bulletX, _bulletY, 0);
 }
 
-void Bullet::update()
+void Bullet::update(bool &shot)
 {
-	if (_bulletY < BULLET_SIZE) {
+	if (_bulletY > -BULLET_SIZE && shot) {
 		_bulletY -= BULLET_SPEED;
 	}
 	else {
-		delete this;
+		shot = false;
 	}
 }
 

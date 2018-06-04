@@ -27,8 +27,14 @@ void Player::move( bool key[]){
 	}
 }
 
-void Player::shot(){
-	// disparo del player
+Bullet* Player::shot(bool &shot){
+	if (!shot) {
+		shot = true;
+		return new Bullet(_playerX, _playerY);
+	}
+	else {
+		shot = false;
+	}
 }
 
 void Player::draw(){
