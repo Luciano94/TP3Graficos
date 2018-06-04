@@ -25,6 +25,7 @@ public:
 	void setPosition(int x, int y);
 	bool collision(int otherX, int otherY, int otherSize);
 	void life(bool &done);
+	int getLives();
 };
 #endif // !PLAYER_H
 

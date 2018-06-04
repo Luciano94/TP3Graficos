@@ -55,11 +55,16 @@ bool Player::collision(int otherX, int otherY, int otherSize)
 void Player::life(bool &done)
 {
 	_lives--;
-	if (_lives >= 0) {
+	if (_lives > 0) {
 		_playerX = SCREEN_W / 2.0 - PLAYER_SIZE / 2.0;
 		_playerY = SCREEN_H - PLAYER_SIZE;
 	}
 	else {
 		done = true;
 	}
+}
+
+int Player::getLives()
+{
+	return _lives;
 }

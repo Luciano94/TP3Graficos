@@ -5,6 +5,8 @@
 #include "allegro5/allegro_native_dialog.h"
 #include "allegro5/allegro_acodec.h"
 #include "allegro5/allegro_audio.h"
+#include "allegro5/allegro_font.h"
+#include "allegro5/allegro_ttf.h"
 #include "Player.h"
 #include "Enemy.h"
 #include "Definitions.h"
@@ -97,6 +99,16 @@ int main(int argc, char **argv) {
 
 	if (!enemyDeath)
 		printf("Audio clip sample not loaded!\n");
+	
+	al_init_font_addon(); // initialize the font addon
+	al_init_ttf_addon();// initialize the ttf (True Type Font) addon
+	
+	ALLEGRO_FONT *font = al_load_ttf_font(FONT, 28, 0);
+
+	if (!font) {
+		fprintf(stderr, "Could not load 'font.ttf'.\n");
+		return -1;
+	}
 
 	al_register_event_source(event_queue, al_get_display_event_source(display)); //agrego los eventos de ventana a la cola de eventos
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));	//agrego los eventos del timer a la cola de eventos
@@ -219,6 +231,7 @@ int main(int argc, char **argv) {
 					bullet->draw();
 					bullet->update(shot);
 				}
+				al_draw_textf(font, al_map_rgb(255, 255, 255), 0, 0, ALLEGRO_ALIGN_LEFT, "Lives: %d", player->getLives());
 				al_flip_display();						//dibuja pantalla
 			}
 			/*Colisiones*/
@@ -239,6 +252,11 @@ int main(int argc, char **argv) {
 		al_destroy_event_queue(event_queue);			//destruye cola de eventos
 		al_destroy_timer(timer);						//destruyo el timer
 		al_uninstall_keyboard();
+		al_destroy_bitmap(menu);
+		al_destroy_font(font);
+		al_destroy_sample(playerShot);
+		al_destroy_sample(enemyDeath);
+		al_destroy_sample(music);
 		delete player;
 		for (int i = 0; i < cantEnemies; i++)
 			delete enemy[i];

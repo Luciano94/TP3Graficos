@@ -14,6 +14,7 @@ Enemy::Enemy()
 
 Enemy::~Enemy()
 {
+	al_destroy_bitmap(_enemy);
 }
 
 int Enemy::getEnemyX() {
