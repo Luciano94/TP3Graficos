@@ -20,5 +20,8 @@ public:
 	~Enemy();
 	void draw();
 	void setPosition(int x, int y);
+	int getEnemyX();
+	int getEnemyY();
+	void reset();
 };
 #endif // !PLAYER_H#pragma once

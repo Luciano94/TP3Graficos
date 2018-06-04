@@ -18,6 +18,7 @@ public:
 	void draw();
 	void update(bool &shot);
 	void setPosition(int bulletX,int bulletY);
+	bool collision(int otherX, int otherY, int otherSize);
 };
 #endif // !BULLET_H
 

@@ -21,6 +21,8 @@ public:
 	void move(bool key[]);
 	Bullet* shot(bool &shot);
 	void setPosition(int x, int y);
+	bool collision(int otherX, int otherY, int otherSize);
+	void life(bool &done);
 };
 #endif // !PLAYER_H
 

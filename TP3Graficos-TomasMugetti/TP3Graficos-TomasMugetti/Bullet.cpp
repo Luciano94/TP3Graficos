@@ -37,3 +37,9 @@ void Bullet::setPosition(int bulletX,int bulletY)
 	_bulletX = bulletX;
 	_bulletY = bulletY;
 }
+
+bool Bullet::collision(int otherX, int otherY, int otherSize)
+{
+	return ((_bulletX < otherX + otherSize) && (otherX < _bulletX + BULLET_SIZE)
+		&& (_bulletY < otherY + otherSize) && (otherY < _bulletY + BULLET_SIZE));
+}

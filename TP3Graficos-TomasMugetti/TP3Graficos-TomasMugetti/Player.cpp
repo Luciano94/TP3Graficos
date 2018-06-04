@@ -45,3 +45,21 @@ void Player::setPosition(int x, int y) {
 	_playerX = x;
 	_playerY = y;
 }
+
+bool Player::collision(int otherX, int otherY, int otherSize)
+{
+	return ((_playerX < otherX + otherSize) && (otherX < _playerX + BULLET_SIZE)
+		&& (_playerY < otherY + otherSize) && (otherY < _playerY + BULLET_SIZE));
+}
+
+void Player::life(bool &done)
+{
+	_lives--;
+	if (_lives >= 0) {
+		_playerX = SCREEN_W / 2.0 - PLAYER_SIZE / 2.0;
+		_playerY = SCREEN_H - PLAYER_SIZE;
+	}
+	else {
+		done = true;
+	}
+}

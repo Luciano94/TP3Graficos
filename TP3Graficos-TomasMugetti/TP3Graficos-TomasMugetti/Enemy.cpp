@@ -16,6 +16,19 @@ Enemy::~Enemy()
 {
 }
 
+int Enemy::getEnemyX() {
+	return _enemyX;
+}
+
+int Enemy::getEnemyY(){
+	return _enemyY;
+}
+
+void Enemy::reset(){
+	_enemyY = ENEMY_SIZE;
+	_enemyX = rand() % (SCREEN_W - ENEMY_SIZE - 20 + 1);
+}
+
 void Enemy::draw()
 {
 	al_draw_bitmap(_enemy, _enemyX, _enemyY, 0);
