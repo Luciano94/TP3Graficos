@@ -21,11 +21,12 @@ public:
 	~Player();
 	void draw();
 	void move(bool key[]);
-	Bullet* shot(bool &shot);
 	void setPosition(int x, int y);
 	bool collision(int otherX, int otherY, int otherSize);
 	void life(bool &done);
 	int getLives();
+	int getX();
+	int getY();
 };
 #endif // !PLAYER_H
 

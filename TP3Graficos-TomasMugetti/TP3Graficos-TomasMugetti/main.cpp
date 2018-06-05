@@ -67,49 +67,6 @@ int main(int argc, char **argv) {
 		al_destroy_display(display);
 		return -1;
 	}
-	/*creo la imagen del menu*/
-	menu = al_load_bitmap(MENU_FILE);
-	if (!menu) {
-		al_show_native_message_box(display, "Error", "Error", "Failed to load menu!",
-			NULL, ALLEGRO_MESSAGEBOX_ERROR);
-		al_destroy_display(display);
-		al_destroy_timer(timer);
-		return -1;
-	}
-	/*inicializo audio*/
-	if (!al_install_audio()) {
-		fprintf(stderr, "failed to initialize audio!\n");
-		return -1;
-	}
-	if (!al_init_acodec_addon()) {
-		fprintf(stderr, "failed to initialize audio codecs!\n");
-		return -1;
-	}
-	if (!al_reserve_samples(3)) {
-		fprintf(stderr, "failed to reserve samples!\n");
-		return -1;
-	}
-
-	playerShot = al_load_sample(SHOT_SOUND);
-
-	if (!playerShot)
-		printf("Audio clip sample not loaded!\n");
-	
-	enemyDeath = al_load_sample(ENEMY_DEATH);
-
-	if (!enemyDeath)
-		printf("Audio clip sample not loaded!\n");
-	
-	al_init_font_addon(); // initialize the font addon
-	al_init_ttf_addon();// initialize the ttf (True Type Font) addon
-	
-	ALLEGRO_FONT *font = al_load_ttf_font(FONT, 28, 0);
-
-	if (!font) {
-		fprintf(stderr, "Could not load 'font.ttf'.\n");
-		return -1;
-	}
-
 	al_register_event_source(event_queue, al_get_display_event_source(display)); //agrego los eventos de ventana a la cola de eventos
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));	//agrego los eventos del timer a la cola de eventos
 	al_register_event_source(event_queue, al_get_keyboard_event_source());		//agrego los eventos del teclado a la cola de eventos
@@ -119,10 +76,19 @@ int main(int argc, char **argv) {
 	
 	/*Pantalla de titulo*/
 	while (!gameStart) {
+		/*creo la imagen del menu*/
+		menu = al_load_bitmap(MENU_FILE);
+		if (!menu) {
+			al_show_native_message_box(display, "Error", "Error", "Failed to load menu!",
+				NULL, ALLEGRO_MESSAGEBOX_ERROR);
+			al_destroy_display(display);
+			al_destroy_timer(timer);
+			return -1;
+		}
 		ALLEGRO_EVENT event;
 		al_wait_for_event(event_queue, &event);
 		if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {	//evento de cerrar ventana
-			return 0;
+			break;
 		}
 		if (event.type == ALLEGRO_EVENT_KEY_UP) {
 			switch (event.keyboard.keycode) {
@@ -139,6 +105,48 @@ int main(int argc, char **argv) {
 	}
 	/*Juego*/
 	if (gameStart) {
+		/*creo la imagen del backgraund*/
+		menu = al_load_bitmap(BACKGROUND);
+		if (!menu) {
+			al_show_native_message_box(display, "Error", "Error", "Failed to load menu!",
+				NULL, ALLEGRO_MESSAGEBOX_ERROR);
+			al_destroy_display(display);
+			al_destroy_timer(timer);
+			return -1;
+		}
+		/*inicializo audio*/
+		if (!al_install_audio()) {
+			fprintf(stderr, "failed to initialize audio!\n");
+			return -1;
+		}
+		if (!al_init_acodec_addon()) {
+			fprintf(stderr, "failed to initialize audio codecs!\n");
+			return -1;
+		}
+		if (!al_reserve_samples(3)) {
+			fprintf(stderr, "failed to reserve samples!\n");
+			return -1;
+		}
+
+		playerShot = al_load_sample(SHOT_SOUND);
+
+		if (!playerShot)
+			printf("Audio clip sample not loaded!\n");
+
+		enemyDeath = al_load_sample(ENEMY_DEATH);
+
+		if (!enemyDeath)
+			printf("Audio clip sample not loaded!\n");
+
+		al_init_font_addon(); // initialize the font addon
+		al_init_ttf_addon();// initialize the ttf (True Type Font) addon
+
+		ALLEGRO_FONT *font = al_load_ttf_font(FONT, 28, 0);
+
+		if (!font) {
+			fprintf(stderr, "Could not load 'font.ttf'.\n");
+			return -1;
+		}
 		bool redraw = true;									 // controla el refresco de pantalla
 		bool doexit = false;								 //controla el loop de la ventana
 		Player* player;
@@ -155,11 +163,12 @@ int main(int argc, char **argv) {
 		/*creo elementos del juego*/
 		player = new Player();
 		player->setPosition(SCREEN_W / 2.0 - PLAYER_SIZE / 2.0, SCREEN_H - PLAYER_SIZE);
+		bullet = new Bullet(-BULLET_SIZE, -BULLET_SIZE);
 		/*Creacion de enemigos*/
 		for (int i = 0; i < cantEnemies; i++)
 			enemy[i] = new Enemy();
 		for (int i = 0; i < cantEnemies; i++)
-			enemy[i]->setPosition(rand() % (SCREEN_W - ENEMY_SIZE - 20 + 1), ENEMY_SIZE);
+			enemy[i]->setPosition(rand() % (SCREEN_W - ENEMY_SIZE), ENEMY_SIZE);
 		/*game loop*/
 		al_play_sample(music, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
 		while (!doexit) {
@@ -215,7 +224,7 @@ int main(int argc, char **argv) {
 
 				case ALLEGRO_KEY_C:
 					if (!shot) {
-						bullet = player->shot(shot);
+						bullet->reset(shot,player->getX(),player->getY());
 						al_play_sample(playerShot, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 					}
 						break;
@@ -224,6 +233,7 @@ int main(int argc, char **argv) {
 			if (redraw && al_is_event_queue_empty(event_queue)) {
 				redraw = false;
 				al_clear_to_color(al_map_rgb(0, 0, 0));	//se pone la pantalla en negro
+				al_draw_bitmap(menu, 0, 0, 0);
 				player->draw();							//dibuja player
 				for (int i = 0; i < cantEnemies; i++)
 					enemy[i]->draw();
@@ -239,7 +249,7 @@ int main(int argc, char **argv) {
 				if (shot && (bullet->collision(enemy[i]->getEnemyX(), enemy[i]->getEnemyY(), ENEMY_SIZE))) {
 					enemy[i]->reset();
 					al_play_sample(enemyDeath, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-					delete bullet;
+					bullet->setPosition(-BULLET_SIZE, -BULLET_SIZE);
 					shot = false;
 				}
 				if (player->collision(enemy[i]->getEnemyX(), enemy[i]->getEnemyY(), ENEMY_SIZE)) {
@@ -251,16 +261,17 @@ int main(int argc, char **argv) {
 		al_destroy_display(display);					//destruye la pantalla
 		al_destroy_event_queue(event_queue);			//destruye cola de eventos
 		al_destroy_timer(timer);						//destruyo el timer
-		al_uninstall_keyboard();
-		al_destroy_bitmap(menu);
-		al_destroy_font(font);
-		al_destroy_sample(playerShot);
-		al_destroy_sample(enemyDeath);
-		al_destroy_sample(music);
-		delete player;
-		for (int i = 0; i < cantEnemies; i++)
+		al_uninstall_keyboard();						//desactivo el teclado
+		al_destroy_bitmap(menu);						//borro la imagen del menu
+		al_destroy_font(font);							//borro la fuente
+		al_destroy_sample(playerShot);					//borro el sonido de disparo
+		al_destroy_sample(enemyDeath);					//borro el sonido de muerte del enemigo
+		al_destroy_sample(music);						//borro la musica
+		delete player;									//borro el player
+		for (int i = 0; i < cantEnemies; i++)			//borro los enemigos
 			delete enemy[i];
-		if(bullet) delete bullet;
-	}
+		delete bullet;									//borro la bala
 		return 0;
+	}
+	return 0;
 }

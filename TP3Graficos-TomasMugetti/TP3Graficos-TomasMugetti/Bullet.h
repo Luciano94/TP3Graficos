@@ -19,6 +19,7 @@ public:
 	void update(bool &shot);
 	void setPosition(int bulletX,int bulletY);
 	bool collision(int otherX, int otherY, int otherSize);
+	void reset(bool &shot, int X, int Y);
 };
 #endif // !BULLET_H
 

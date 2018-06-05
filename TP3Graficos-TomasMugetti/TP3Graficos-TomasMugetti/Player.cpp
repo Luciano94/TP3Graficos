@@ -27,16 +27,6 @@ void Player::move( bool key[]){
 	}
 }
 
-Bullet* Player::shot(bool &shot){
-	if (!shot) {
-		shot = true;
-		return new Bullet(_playerX, _playerY);
-	}
-	else {
-		shot = false;
-	}
-}
-
 void Player::draw(){
 	al_draw_bitmap(_player, _playerX, _playerY, 0);
 }
@@ -67,4 +57,14 @@ void Player::life(bool &done)
 int Player::getLives()
 {
 	return _lives;
+}
+
+int Player::getX()
+{
+	return _playerX;
+}
+
+int Player::getY()
+{
+	return _playerY;
 }

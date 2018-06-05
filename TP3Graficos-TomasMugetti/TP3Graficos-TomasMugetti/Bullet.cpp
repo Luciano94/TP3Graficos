@@ -2,7 +2,7 @@
 
 Bullet::Bullet(int bulletX, int bulletY)
 {
-	_bullet = al_load_bitmap(PLAYER_SPRITE);
+	_bullet = al_load_bitmap(BULLET_SPRITE);
 	if (!_bullet) {
 		cout << "Bullet error";
 	}
@@ -42,4 +42,13 @@ bool Bullet::collision(int otherX, int otherY, int otherSize)
 {
 	return ((_bulletX < otherX + otherSize) && (otherX < _bulletX + BULLET_SIZE)
 		&& (_bulletY < otherY + otherSize) && (otherY < _bulletY + BULLET_SIZE));
+}
+
+void Bullet::reset(bool &shot,int X, int Y)
+{
+	if (!shot) {
+		shot = true;
+		_bulletX = X + (PLAYER_SIZE / 2) - BULLET_SIZE;
+		_bulletY = Y;
+	}
 }

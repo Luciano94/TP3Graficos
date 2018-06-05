@@ -103,7 +103,8 @@ copy "$(SolutionDir)Libs\allegro_5.1.12_x86\bin\allegro_image-debug-5.1.dll" "$(
 copy "$(SolutionDir)Libs\allegro_5.1.12_x86\bin\allegro_acodec-debug-5.1.dll" "$(OutDir)"
 copy "$(SolutionDir)Libs\allegro_5.1.12_x86\bin\allegro_audio-debug-5.1.dll" "$(OutDir)"
 copy "$(SolutionDir)Libs\allegro_5.1.12_x86\bin\allegro_font-debug-5.1.dll" "$(OutDir)"
-copy "$(SolutionDir)Libs\allegro_5.1.12_x86\bin\allegro_ttf-debug-5.1.dll" "$(OutDir)"</Command>
+copy "$(SolutionDir)Libs\allegro_5.1.12_x86\bin\allegro_ttf-debug-5.1.dll" "$(OutDir)"
+xcopy /s "$(SolutionDir)Assets" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -129,6 +130,9 @@ copy "$(SolutionDir)Libs\allegro_5.1.12_x86\bin\allegro_ttf-debug-5.1.dll" "$(Ou
       <AdditionalDependencies>zlib.lib;winmm.lib;opengl32.lib;dumb.lib;psapi.lib;FLAC.lib;shlwapi.lib;freetype.lib;ogg.lib;jpeg.lib;vorbisfile.lib;vorbis.lib;physfs.lib;libpng16.lib;allegro-static.lib;allegro_dialog-static.lib;allegro_image-static.lib;allegro_audio-static.lib;allegro_acodec-static.lib;allegro_font-static.lib;allegro_ttf-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /s "$(SolutionDir)Assets" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
